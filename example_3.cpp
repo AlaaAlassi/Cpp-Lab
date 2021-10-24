@@ -17,6 +17,9 @@ int main(){
 
     this_thread::sleep_for(chrono::milliseconds(50));
 
+                unsigned int nCores = std::thread::hardware_concurrency();
+    std::cout << "This machine supports concurrency with " << nCores << " cores available" << std::endl;
+
     cout << "finished work in main" << endl;
 
     t.join();
