@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 2.8.11)
+Project(Multi_threading_demo)
+
+file(GLOB files ${CMAKE_CURRENT_LIST_DIR}/*.cpp)
+
+set(i 0)
+foreach(file ${files})
+message(${file})
+set(execName exampleExee_${i})
+add_executable(${execName} ${file})
+target_link_libraries (${execName} pthread)
+math(EXPR i "${i} + 1")
+endforeach()

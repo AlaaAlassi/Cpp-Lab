@@ -4,7 +4,7 @@
 using namespace std;
 
 void threadFunction (){
-    this_thread::sleep_for(chrono::milliseconds(100));
+    this_thread::sleep_for(chrono::milliseconds(1));
     cout << "finished work in thread" <<endl;
 }
 
