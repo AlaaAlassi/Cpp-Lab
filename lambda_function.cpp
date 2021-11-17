@@ -17,10 +17,13 @@ int main()
 
     auto f4 = [id]() mutable { std::cout << "ID = " << ++id << std::endl; }; // OK, 'id' may be modified
 
+    auto f5 = [](const int id){std::cout << "ID = " << id << std::endl;};
+
     // execute lambdas
     f1();
     f2();
     f4();
+    f5(id);
 
     return 0;
 }
