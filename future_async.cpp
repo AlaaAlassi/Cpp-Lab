@@ -7,6 +7,8 @@
 double divideByNumber(double num, double denom)
 {
     std::this_thread::sleep_for(std::chrono::milliseconds(500)); // simulate work
+    std::cout << "divideByNumber = " <<     std::this_thread::get_id() << std::endl;
+
 
     if (denom == 0)
         throw std::runtime_error("Exception from thread: Division by zero!");
@@ -20,7 +22,7 @@ int main()
     // use async to start a task
     double num = 42.0, denom = 2.0;
     std::future<double> ftr = std::async(divideByNumber, num, denom);
-
+    std::cout << "Main th = " <<     std::this_thread::get_id() << std::endl;
     // retrieve result within try-catch-block
     try
     {
