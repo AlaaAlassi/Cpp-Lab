@@ -3,6 +3,8 @@
 #include <vector>
 #include <future>
 #include <mutex>
+#include <algorithm>
+
 
 std::mutex mtx;
 double result;
