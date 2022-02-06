@@ -19,6 +19,15 @@ std::deque<T> _message;
 
 };
 
+void planningFunciton(std::shared_ptr<MessageQueue<int>> avialableRobots,std::shared_ptr<MessageQueue<int>> busyRobots){
+        while (true)
+    {
+    int message = avialableRobots->receive();
+     std::cout << "[Planning] recived "<< message << std::endl;
+    busyRobots->send(std::move(message));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+}
 
 template <typename T>
 T MessageQueue<T>::receive()
@@ -29,8 +38,8 @@ T MessageQueue<T>::receive()
     std::unique_lock<std::mutex> uLock(_mux);
     _cond.wait(uLock, [this]
                { return !_message.empty(); });
-    T msg = std::move(_message.back());
-    _message.clear();
+    T msg = std::move(_message.front());
+    _message.pop_front();
     return msg;
 }
 
@@ -45,20 +54,24 @@ void MessageQueue<T>::send(T &&msg)
 }
 
 int main(){
-    MessageQueue<int> Q;
-    std::deque<int> pool{1,2,3,4,5,6,7,8};
+    std::shared_ptr<MessageQueue<int>> avialableRobots = std::make_shared<MessageQueue<int>>();
+    std::shared_ptr<MessageQueue<int>> busyRobots = std::make_shared<MessageQueue<int>>();
     int message =0;
-    Q.send(std::move(message));
-    while (true)
-    {
-    message = Q.receive();
-    Q.send(std::move(message));
-    std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-    int message = Q.receive();
-    std::cout << message << std::endl;
-    message = message+1;
-    Q.send(std::move(message));
-
+    for(int i=0;i<10;i++){
+        avialableRobots->send(std::move(i));
     }
+    std::thread simulationThread(&planningFunciton, avialableRobots,busyRobots);
+
+
+    while(true){
+
+    int message = busyRobots->receive();
+    std::this_thread::sleep_for(std::chrono::milliseconds(5000));
+    std::cout << "[Execution] Sent "<< message << std::endl;
+    avialableRobots->send(std::move(message));
+    }
+
+    simulationThread.join();
+
 
 }
